@@ -91,6 +91,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalisisLexico.vb" />
     <Compile Include="Analizador.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>

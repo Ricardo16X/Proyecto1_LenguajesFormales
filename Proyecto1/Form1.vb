@@ -16,7 +16,7 @@ Public Class Form1
     'Abrir archivo con extensión .ACK
     Private Sub AbrirToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AbrirToolStripMenuItem.Click
         Dim openDialog As New OpenFileDialog
-        openDialog.Filter = "Archivo .ACK | *.ack,*.ACK"
+        openDialog.Filter = "Archivo .ack | *.ack"
         Try
             If (openDialog.ShowDialog) = DialogResult.OK Then
                 DireccionArchivo = openDialog.FileName
@@ -28,17 +28,19 @@ Public Class Form1
     End Sub
     'Guardar Archivo tanto si existe o no.
     Private Sub GuardarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GuardarToolStripMenuItem.Click
-        If DireccionArchivo = "" Then
-            guardarArchivo(CajaTexto.Text)
-        Else
+        If DireccionArchivo.Length > 3 Then
             CajaTexto.SaveFile(DireccionArchivo, fileType:=RichTextBoxStreamType.PlainText)
+        Else
+            guardarArchivo(CajaTexto.Text)
         End If
     End Sub
     Private Sub guardarArchivo(Texto As String)
         Dim GuardarArchivo As New SaveFileDialog
-        GuardarArchivo.Filter = "Archivo .ACK | *.ack,*.ACK"
+        GuardarArchivo.Filter = "Archivo .ack | *.ack"
         Try
-            My.Computer.FileSystem.WriteAllText(GuardarArchivo.FileName, Texto, False)
+            If (GuardarArchivo.ShowDialog = DialogResult.OK) Then
+                My.Computer.FileSystem.WriteAllText(GuardarArchivo.FileName, Texto, False)
+            End If
         Catch ex As Exception
             MessageBox.Show(ex.ToString)
         End Try
@@ -46,5 +48,6 @@ Public Class Form1
     'Función para Analizar el Texto para poder crear el PDF con las instrucciones que aquí se escriban.
     Private Sub AnalizarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AnalizarToolStripMenuItem.Click
         Analizador.AnalisisLexico(CajaTexto.Text + "_")
+        'AnalisisLexico.AnalisisLexico(CajaTexto.Text + "_")
     End Sub
 End Class

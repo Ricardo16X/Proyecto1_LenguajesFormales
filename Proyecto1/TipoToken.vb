@@ -1,35 +1,7 @@
 ﻿Public Class TipoToken
     Friend Function retornarToken(v As String) As Object
         Select Case v
-            Case "INSTRUCCIONES"
-                Return "Palabra Reservada"
-            Case "VARIABLES"
-                Return "Palabra Reservada"
-            Case "TEXTO"
-                Return "Palabra Reservada"
-            Case "INTERLINEADO"
-                Return "Palabra Reservada"
-            Case "TAMANIO_LETRA"
-                Return "Palabra Reservada"
-            Case "NOMBRE_ARCHIVO"
-                Return "Palabra Reservada"
-            Case "DIRECCION_ARCHIVO"
-                Return "Palabra Reservada"
-            Case "IMAGEN"
-                Return "Palabra Reservada"
-            Case "NUMEROS"
-                Return "Palabra Reservada"
-            Case "VAR"
-                Return "Palabra Reservada"
-            Case "PROMEDIO"
-                Return "Palabra Reservada"
-            Case "SUMA"
-                Return "Palabra Reservada"
-            Case "ASIGNAR"
-                Return "Palabra Reservada"
-            Case "ENTERO"
-                Return "Palabra Reservada"
-            Case "CADENA"
+            Case "PALABRA"
                 Return "Palabra Reservada"
             Case "ID"
                 Return "Identificador"
@@ -61,8 +33,10 @@
                 Return "Corchete de Inicio"
             Case "]"
                 Return "Corchete de Cierre"
+            Case "+"
+                Return "Cruz"
             Case Else
-                Return "Caracter no identificado"
+                Return "Palabra no identificada"
         End Select
     End Function
 End Class

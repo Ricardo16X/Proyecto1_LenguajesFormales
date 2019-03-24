@@ -1,17 +1,23 @@
 ﻿Imports itextsharp.text.pdf
-Imports itextsharp.text
+Imports itextsharp
 Imports System.IO
+Imports itextsharp.text
+
 Public Class Analizador
     Public Shared Sub AnalisisLexico(v As String)
         Dim estado As Integer = 0
         Dim lexema As String = ""
         Dim letra As Char
-        Dim codigoAscii As Integer
+        Dim aski As Integer
         Dim indice As Integer = 0
 
         Dim cadena As Boolean = False
+        Dim Texto As String = ""
         Dim cadenaT As Boolean = False
+        Dim TextoTachado As String = ""
         Dim cadenaN As Boolean = False
+        Dim TextoNegrita As String = ""
+        Dim posibleCadena As Boolean = False
 
         Dim lexemaReconocido As New ArrayList
         Dim filaLexema As New ArrayList
@@ -25,177 +31,344 @@ Public Class Analizador
         Dim token As New TipoToken
 
         Dim fila, columna, longitudPalabra As Integer
-        fila = 1
-        columna = 1
+        fila = 0
+        columna = 0
         longitudPalabra = 0
 
-        For indice = 1 To v.Length
-            letra = v.Chars(indice - 1)
-            codigoAscii = Asc(letra)
-            If (codigoAscii = 10) Then 'Verifica Saltos de Línea
+        'Variables de PDF
+
+        'Instrucciones
+        Dim Interlineado As Double = 1.5
+        Dim EnableInterlineado As Boolean = False
+        Dim LetraSize As Double = 11
+        Dim enableLetraSize As Boolean = False
+        Dim NombreArchivo As String = "Documento.pdf"
+        Dim enableNombreArchivo As Double = False
+        Dim DireccionArchivo As String = "C:\"
+        Dim enableDirArchivo As Boolean = False
+
+        'Instrucciones de Texto
+
+
+
+        'Inicio del Analizador
+        For indice = 0 To v.Length - 1
+
+            letra = v.Chars(indice)
+            aski = Asc(letra)
+
+            If (aski = 10) Then 'Verifica Saltos de Línea
                 fila = fila + 1
                 columna = 0
-            ElseIf (codigoAscii = 32 And cadena = False And cadenaT = False) Then 'Verifica Espacios en Blanco solamente cuando no sea cadena
+
+                '---Verifica Espacios en Blanco solamente cuando no sea cadena
+            ElseIf (aski = 32 And cadena = False And cadenaT = False And cadenaN = False) Then
                 columna = columna + 1
+                '---
             Else
                 Select Case estado
+
                     Case 0
                         'Reconoce los nombres de Variables
-                        If (codigoAscii >= 65 And codigoAscii <= 90) Or (codigoAscii >= 97 And codigoAscii <= 122) Or codigoAscii = 95 Then
+                        If (aski >= 65 And aski <= 90) Or (aski >= 97 And aski <= 122) Or aski = 95 Then
                             estado = 1
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 45 Then 'Reconoce el signo menos
+
+                        ElseIf aski = 45 Then 'Reconoce el signo menos
                             estado = 2
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii >= 48 And codigoAscii <= 57 Then 'Reconoce los´números
+
+                        ElseIf aski >= 48 And aski <= 57 Then 'Reconoce los´números
                             estado = 3
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 123 Then 'Reconoce la llave de Inicio {
+
+                        ElseIf aski = 123 Then 'Reconoce la llave de Inicio {
                             estado = 4
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 125 Then 'Reconoce la llave de Fin }
+
+                        ElseIf aski = 125 Then 'Reconoce la llave de Fin }
                             estado = 5
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 40 Then 'Reconoce (
+
+                        ElseIf aski = 40 Then 'Reconoce (
                             estado = 6
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 41 Then 'Reconoce )
+
+                        ElseIf aski = 41 Then 'Reconoce )
                             estado = 7
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 58 Then 'Reconoce :
+
+                        ElseIf aski = 58 Then 'Reconoce :
                             estado = 8
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 34 Then 'Reconoce "
+
+                        ElseIf aski = 34 Then 'Reconoce "
                             estado = 9
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 61 Then 'Reconoce =
+
+                        ElseIf aski = 61 Then 'Reconoce =
                             estado = 11
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 47 Then 'Reconoce /
+
+                        ElseIf aski = 47 Then 'Reconoce /
                             estado = 12
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 42 Then 'Reconoce *
+
+                        ElseIf aski = 42 Then 'Reconoce *
                             estado = 13
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 59 Then 'Reconoce ;
+
+                        ElseIf aski = 59 Then 'Reconoce ;
                             estado = 14
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 44 Then 'Reconoce ,
+
+                        ElseIf aski = 44 Then 'Reconoce ,
                             estado = 15
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 91 Then 'Reconoce [
+
+                        ElseIf aski = 91 Then 'Reconoce [
                             estado = 16
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 93 Then 'Reconoce ]
+
+                        ElseIf aski = 93 Then 'Reconoce ]
                             estado = 17
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 43 Then 'Reconoce +
+
+                        ElseIf aski = 43 Then 'Reconoce +
                             estado = 18
                             lexema = lexema + letra
                             longitudPalabra += 1
+
                         Else
                             lexema = lexema + letra
                             errorReconocido.Add(lexema)
-                            token.retornarToken("ERROR")
+                            tipoToken.Add(token.retornarToken("ERROR"))
                             lexema = ""
+                            estado = 0
+                            indice = indice - 1
                         End If
+
                     Case 1
-                        'Si lo que voy a evaluar es cadena, permitiré todos los caracteres menos "
+
+
                         If (cadena = True) Then
-                            If (codigoAscii >= 32 And codigoAscii <= 33) Or (codigoAscii >= 35 And codigoAscii <= 254) Then
+                            'Si lo que voy a evaluar es cadena, permitiré todos los caracteres menos "
+                            If (aski >= 32 And aski <= 33) Or (aski >= 35 And aski <= 254) Then
                                 estado = 1
                                 lexema = lexema + letra
                                 longitudPalabra += 1
-                            ElseIf (codigoAscii = 34) Then
+                            ElseIf (aski = 34) Then
+                                'Aquí ha leido "
                                 estado = 9
                                 lexema = lexema + letra
                                 longitudPalabra += 1
                             End If
+
                         ElseIf (cadenaT = True) Then
-                            If (codigoAscii >= 32 And codigoAscii <= 41) Or (codigoAscii >= 43 And codigoAscii <= 254) Then
+                            'Aquí evaluo la cadena Tachada y no permito el caracter *
+                            If (aski >= 32 And aski <= 41) Or (aski >= 43 And aski <= 254) Then
                                 estado = 1
                                 lexema = lexema + letra
                                 longitudPalabra += 1
-                            ElseIf (codigoAscii = 42) Then '*
-                                estado = 13
+
+                            ElseIf (aski = 42) Then
+                                'Aquí ha leido *
+                                lexemaReconocido.Add(lexema)
+                                filaLexema.Add(fila)
+                                columnaLexema.Add(columna)
+                                tipoToken.Add(token.retornarToken("TEXTO"))
+
+                                '---Escribo el lexema en el PDF con su respectivo Tachado
+
+                                '---
+                                cadenaT = False
+                                estado = 0
+                                columna = columna + longitudPalabra
+                                longitudPalabra = 0
+                                indice = indice - 1
+                                lexema = ""
+                                posibleCadena = False
+                            End If
+                        ElseIf (cadenaN = True) Then
+                            If (aski >= 32 And aski <= 42) Or (aski >= 44 And aski <= 254) Then
+                                estado = 1
                                 lexema = lexema + letra
                                 longitudPalabra += 1
+                            ElseIf (aski = 43) Then
+                                '---Fin de cadena al encontrar
+                                '---el simbolo +---
+                                lexemaReconocido.Add(lexema)
+                                filaLexema.Add(fila)
+                                columnaLexema.Add(columna)
+                                tipoToken.Add(token.retornarToken("TEXTO"))
+                                '---
+
+                                '---Escribir Lexema en Negrita en el PDF
+
+                                '---
+                                cadenaN = False
+                                estado = 0
+                                columna = columna + longitudPalabra - 1
+                                longitudPalabra = 0
+                                indice = indice - 1
+                                lexema = ""
+                                posibleCadena = False
                             End If
                         Else
                             'Si lo que viene es una letra o un guion bajo _ pero no forma parte de una cadena.
-                            If (codigoAscii >= 65 And codigoAscii <= 90) Or (codigoAscii >= 97 And codigoAscii <= 122) Or codigoAscii = 95 Then
+                            'Pueden ser nombres de Variables o Palabras Reservadas
+                            If (aski >= 65 And aski <= 90) Or (aski >= 97 And aski <= 122) Or aski = 95 Or (aski >= 48 And aski <= 57) Then
                                 estado = 1
                                 lexema = lexema + letra
                                 longitudPalabra += 1
-                            ElseIf codigoAscii = 46 Then '.
-                                estado = 20
-                                lexema = lexema + letra
-                                longitudPalabra += 1
                             Else
+
                                 lexemaReconocido.Add(lexema)
                                 filaLexema.Add(fila)
                                 columnaLexema.Add(columna)
 
-                                estado = 0
+                                If (String.Compare("INSTRUCCIONES", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
 
+                                ElseIf (String.Compare("VARIABLES", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+                                ElseIf (String.Compare("TEXTO", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+                                ElseIf (String.Compare("INTERLINEADO", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+                                    '----------------Habilita el Interlineado---------------
+                                    If (letra = "(") Then
+                                        EnableInterlineado = True
+                                    End If
+                                    '-----------------------------------------------------
+
+                                ElseIf (String.Compare("TAMANIO_LETRA", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+
+                                ElseIf (String.Compare("NOMBRE_ARCHIVO", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+
+                                ElseIf (String.Compare("DIRECCION_ARCHIVO", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+
+                                ElseIf (String.Compare("IMAGEN", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+
+                                ElseIf (String.Compare("NUMEROS", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+                                ElseIf (String.Compare("LINEA_EN_BLANCO", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+
+                                ElseIf (String.Compare("VAR", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+
+                                ElseIf (String.Compare("PROMEDIO", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+
+                                ElseIf (String.Compare("SUMA", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+
+                                ElseIf (String.Compare("ASIGNAR", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+
+                                ElseIf (String.Compare("CADENA", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+
+                                ElseIf (String.Compare("ENTERO", lexema.ToUpper)) = 0 Then
+                                    tipoToken.Add(token.retornarToken("PALABRA"))
+
+                                Else
+                                    tipoToken.Add(token.retornarToken("ID"))
+
+                                End If
+
+                                estado = 0
                                 columna = columna + longitudPalabra
                                 longitudPalabra = 0
                                 lexema = ""
                                 indice = indice - 1
                             End If
                         End If
+
                     Case 2
                         'Acepta -
-                        'Verifica que lo que venga sean números ya que antes hubo un signo menos - 
-                        If codigoAscii >= 97 And codigoAscii <= 122 Then
+
+                        '-------------------Verifica que lo que venga sean números ya que antes hubo un signo menos - ----------
+                        If aski >= 97 And aski <= 122 Then
                             estado = 3
                             lexema = lexema + letra
                             longitudPalabra += 1
                         Else
                             'No vino ningún número, se toma como error
+                            '---------------------------------------------
                             errorReconocido.Add(lexema)
                             filaError.Add(fila)
                             columnaError.Add(columna)
 
+                            tipoToken.Add(token.retornarToken("ERROR"))
                             estado = 0
                             columna = columna + longitudPalabra
                             longitudPalabra = 0
                             lexema = ""
                             indice = indice - 1
+                            '---------------------------------------------
                         End If
                     Case 3
                         'Verifica que venga un número dado que antes hay un número
-                        If codigoAscii >= 97 And codigoAscii <= 122 Then
+                        If aski >= 48 And aski <= 57 Then
                             estado = 3
                             lexema = lexema + letra
                             longitudPalabra += 1
-                        ElseIf codigoAscii = 46 Then
-                            'Verifica si lo que viene es un punto
+
+                        ElseIf aski = 46 Then
+                            '---------Vino punto, entonces es número Real------------
                             estado = 20
                             lexema = lexema + letra
                             longitudPalabra = longitudPalabra + 1
+
+                        ElseIf (aski >= 65 And aski <= 126) Then
+                            'Tengo que enviarlo a un estado de Error
+
+                            estado = 25
+                            lexema = lexema + letra
+                            longitudPalabra += 1
+
                         Else
                             'Vino un elemento distinto a número, pero es estado de aceptación se reconoce como lexema.
                             lexemaReconocido.Add(lexema)
                             filaLexema.Add(fila)
                             columnaLexema.Add(columna)
-
+                            tipoToken.Add("NUMERO")
                             estado = 0
                             columna = columna + longitudPalabra
                             longitudPalabra = 0
@@ -262,7 +435,7 @@ Public Class Analizador
                         'Reconociendo el Inicio de Cadena
                         If (cadena = False) Then
                             cadena = True
-                            If (codigoAscii >= 32 And codigoAscii <= 33) Or (codigoAscii >= 35 And codigoAscii <= 254) Then
+                            If (aski >= 32 And aski <= 33) Or (aski >= 35 And aski <= 254) Then
                                 estado = 1
                                 lexema = lexema + letra
                                 longitudPalabra += 1
@@ -304,24 +477,25 @@ Public Class Analizador
                         indice = indice - 1
                     Case 13
                         'Acepta *
-                        If (cadenaT = False) Then
-                            If (codigoAscii >= 32 And codigoAscii <= 41) Or (codigoAscii >= 43 And codigoAscii <= 254) Then
+                        If posibleCadena = True Then
+                            'Si posibleCadena es verdadera, entonces antes ha venido un [ 
+                            'por lo tanto se procederá a guardar TEXTO
+                            If (aski >= 33 And aski <= 41) Or (aski >= 43 And aski <= 254) Then
                                 estado = 1
-                                lexema = lexema + letra
                                 longitudPalabra += 1
                                 cadenaT = True
+
+                                lexemaReconocido.Add(lexema)
+                                filaLexema.Add(fila)
+                                columnaLexema.Add(columna)
+                                tipoToken.Add(token.retornarToken("*"))
+                                'estado = 0
+                                columna = columna + longitudPalabra
+                                longitudPalabra = 0
+                                lexema = ""
+                                indice = indice - 1
+                                posibleCadena = False
                             End If
-                        ElseIf (cadenaT = True) Then
-                            lexemaReconocido.Add(lexema)
-                            filaLexema.Add(fila)
-                            columnaLexema.Add(columna)
-                            tipoToken.Add(token.retornarToken("CADENA"))
-                            estado = 0
-                            columna = columna + longitudPalabra
-                            longitudPalabra = 0
-                            lexema = ""
-                            indice = indice - 1
-                            cadenaT = False
                         Else
                             lexemaReconocido.Add(lexema)
                             filaLexema.Add(fila)
@@ -333,7 +507,6 @@ Public Class Analizador
                             lexema = ""
                             indice = indice - 1
                         End If
-
                     Case 14
                         'Acepta ;
                         lexemaReconocido.Add(lexema)
@@ -359,22 +532,43 @@ Public Class Analizador
                         indice = indice - 1
                     Case 16
                         'Acepta [
-                        If (codigoAscii = 42) Then
+                        If (aski = 42) Then
                             'Entra *, por lo tanto el texto encerrado será tachado
-                            estado = 13
-                        ElseIf (codigoAscii = 43) Then
+                            lexemaReconocido.Add(lexema)
+                            filaLexema.Add(fila)
+                            columnaLexema.Add(columna)
+                            tipoToken.Add(token.retornarToken("*"))
+                            estado = 0
+                            columna = columna + longitudPalabra
+                            longitudPalabra = 0
+                            indice -= 1
+                            lexema = ""
+                            posibleCadena = True
+                        ElseIf (aski = 43) Then
                             'Entra +, por lo tanto el texto encerrado será en negrita
-                            estado = 18
-                        End If
-                        lexemaReconocido.Add(lexema)
-                        filaLexema.Add(fila)
-                        columnaLexema.Add(columna)
+                            lexemaReconocido.Add(lexema)
+                            filaLexema.Add(fila)
+                            columnaLexema.Add(columna)
+                            tipoToken.Add("Cruz")
+                            estado = 0
+                            columna = columna + longitudPalabra - 1
+                            longitudPalabra = 0
+                            indice = indice - 1
+                            lexema = ""
+                            posibleCadena = True
+                        Else
+                            posibleCadena = False
+                            lexemaReconocido.Add(lexema)
+                            filaLexema.Add(fila)
+                            columnaLexema.Add(columna)
+                            tipoToken.Add(token.retornarToken("["))
 
-                        estado = 0
-                        columna = columna + longitudPalabra
-                        longitudPalabra = 0
-                        lexema = ""
-                        indice = indice - 1
+                            estado = 0
+                            columna = columna + longitudPalabra
+                            longitudPalabra = 0
+                            lexema = ""
+                            indice = indice - 1
+                        End If
                     Case 17
                         'Acepta ]
                         lexemaReconocido.Add(lexema)
@@ -388,15 +582,32 @@ Public Class Analizador
                         indice = indice - 1
                     Case 18
                         'Acepta +
-                        If (codigoAscii >= 32 And codigoAscii <= 42) Or (codigoAscii >= 44 And codigoAscii <= 254) Then
-                            estado = 1
-                            lexema = lexema + letra
-                            longitudPalabra += 1
-                            cadena = True
+
+                        '---Verifica si posibleCadena está habilitado---
+                        '---Si está habilitado, entonces antes vino un [
+                        If (posibleCadena = True) Then
+                            If (aski >= 33 And aski <= 42) Or (aski >= 44 And aski <= 254) Then
+                                estado = 1
+                                longitudPalabra += 1
+                                cadenaN = True
+
+                                lexemaReconocido.Add(lexema)
+                                filaLexema.Add(fila)
+                                columnaLexema.Add(columna)
+                                tipoToken.Add(token.retornarToken("+"))
+                                'estado = 0
+                                columna = columna + longitudPalabra
+                                lexema = ""
+                                indice = indice - 1
+                                posibleCadena = False
+                            End If
                         Else
                             lexemaReconocido.Add(lexema)
                             filaLexema.Add(fila)
                             columnaLexema.Add(columna)
+
+                            tipoToken.Add(token.retornarToken("+"))
+
 
                             estado = 0
                             columna = columna + longitudPalabra
@@ -407,14 +618,8 @@ Public Class Analizador
 
                     Case 20
                         'Verifica que venga número ya que ha venido punto
-                        If codigoAscii >= 97 And codigoAscii <= 122 Then
+                        If aski >= 48 And aski <= 57 Then
                             estado = 21
-                            lexema = lexema + letra
-                            longitudPalabra += 1
-
-                        ElseIf codigoAscii >= 65 And codigoAscii <= 90 Or (codigoAscii >= 97 And codigoAscii <= 122) Or codigoAscii = 95 Then
-                            'Verifica que venga alguna letra ya que ha venido punto, para representar una extensión...
-                            estado = 1
                             lexema = lexema + letra
                             longitudPalabra += 1
                         Else
@@ -431,7 +636,7 @@ Public Class Analizador
                         End If
                     Case 21
                         'Aceptador de numeros reales
-                        If codigoAscii >= 97 And codigoAscii <= 122 Then
+                        If aski >= 48 And aski <= 57 Then
                             estado = 21
                             lexema = lexema + letra
                             longitudPalabra += 1
@@ -445,6 +650,22 @@ Public Class Analizador
                             columna = columna + longitudPalabra
                             longitudPalabra = 0
                             lexema = ""
+                            indice = indice - 1
+                        End If
+                    Case 25
+                        If (aski >= 48 And aski <= 57) Or (aski >= 65 And aski <= 90) Or (aski >= 97 And aski <= 122) Then
+                            estado = 25
+                            lexema = lexema + letra
+                            longitudPalabra += 1
+                        Else
+                            estado = 0
+                            errorReconocido.Add(lexema)
+                            filaError.Add(fila)
+                            columnaError.Add(columna)
+                            columna = columna + longitudPalabra
+                            longitudPalabra = 0
+                            lexema = ""
+                            indice = indice - 1
                         End If
                 End Select
             End If
