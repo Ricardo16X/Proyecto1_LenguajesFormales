@@ -5,6 +5,7 @@ Imports itextsharp.text
 
 Public Class Analizador
     Public Shared Sub AnalisisLexico(v As String, nomArchivo As String)
+        Dim errorcito As Boolean = False
         Dim estado As Integer = 0
         Dim lexema As String = ""
         Dim letra As Char
@@ -31,8 +32,8 @@ Public Class Analizador
         Dim token As New TipoToken
 
         Dim fila, columna, longitudPalabra As Integer
-        fila = 0
-        columna = 0
+        fila = 1
+        columna = 1
         longitudPalabra = 0
 
         'Variables de PDF
@@ -57,18 +58,19 @@ Public Class Analizador
             letra = v.Chars(indice)
             aski = Asc(letra)
 
-            If (aski = 10) Then 'Verifica Saltos de Línea
-                fila = fila + 1
-                columna = 0
-
-                '---Verifica Espacios en Blanco solamente cuando no sea cadena
+            If aski = 10 Then
+                If (errorcito = True) Then
+                    fila += 1
+                    columna = 1
+                End If
             ElseIf (aski = 32 And cadena = False And cadenaT = False And cadenaN = False) Then
+                '---Omite espacios en blanco
                 columna = columna + 1
-                '---
             Else
                 Select Case estado
 
                     Case 0
+                        errorcito = False
                         'Reconoce los nombres de Variables
                         If (aski >= 65 And aski <= 90) Or (aski >= 97 And aski <= 122) Or aski = 95 Then
                             estado = 1
@@ -156,12 +158,17 @@ Public Class Analizador
                             longitudPalabra += 1
 
                         Else
+                            errorcito = True
                             lexema = lexema + letra
+                            longitudPalabra += 1
                             errorReconocido.Add(lexema)
-                            tipoToken.Add(token.retornarToken("ERROR"))
+
+                            filaError.Add(fila)
+                            columnaError.Add(columna)
+
+                            columna = columna + longitudPalabra
                             lexema = ""
                             estado = 0
-                            indice = indice - 1
                         End If
 
                     Case 1
@@ -212,7 +219,7 @@ Public Class Analizador
                                 longitudPalabra += 1
                             ElseIf (aski = 43) Then
                                 '---Fin de cadena al encontrar
-                                '---el simbolo +---
+                                'el simbolo +
                                 lexemaReconocido.Add(lexema)
                                 filaLexema.Add(fila)
                                 columnaLexema.Add(columna)
@@ -335,7 +342,7 @@ Public Class Analizador
                             filaError.Add(fila)
                             columnaError.Add(columna)
 
-                            tipoToken.Add(token.retornarToken("ERROR"))
+                            'tipoToken.Add(token.retornarToken("ERROR"))
                             estado = 0
                             columna = columna + longitudPalabra
                             longitudPalabra = 0
@@ -368,7 +375,7 @@ Public Class Analizador
                             lexemaReconocido.Add(lexema)
                             filaLexema.Add(fila)
                             columnaLexema.Add(columna)
-                            tipoToken.Add("NUMERO")
+                            tipoToken.Add(token.retornarToken("NUMERO"))
                             estado = 0
                             columna = columna + longitudPalabra
                             longitudPalabra = 0
@@ -380,6 +387,7 @@ Public Class Analizador
                         lexemaReconocido.Add(lexema)
                         filaLexema.Add(fila)
                         columnaLexema.Add(columna)
+                        tipoToken.Add(token.retornarToken("{"))
 
                         estado = 0
                         columna = columna + longitudPalabra
@@ -391,6 +399,7 @@ Public Class Analizador
                         lexemaReconocido.Add(lexema)
                         filaLexema.Add(fila)
                         columnaLexema.Add(columna)
+                        tipoToken.Add(token.retornarToken("}"))
 
                         estado = 0
                         columna = columna + longitudPalabra
@@ -402,6 +411,7 @@ Public Class Analizador
                         lexemaReconocido.Add(lexema)
                         filaLexema.Add(fila)
                         columnaLexema.Add(columna)
+                        tipoToken.Add(token.retornarToken("("))
 
                         estado = 0
                         columna = columna + longitudPalabra
@@ -413,6 +423,7 @@ Public Class Analizador
                         lexemaReconocido.Add(lexema)
                         filaLexema.Add(fila)
                         columnaLexema.Add(columna)
+                        tipoToken.Add(token.retornarToken(")"))
 
                         estado = 0
                         columna = columna + longitudPalabra
@@ -424,6 +435,7 @@ Public Class Analizador
                         lexemaReconocido.Add(lexema)
                         filaLexema.Add(fila)
                         columnaLexema.Add(columna)
+                        tipoToken.Add(token.retornarToken(":"))
 
                         estado = 0
                         columna = columna + longitudPalabra
@@ -446,6 +458,17 @@ Public Class Analizador
                             lexemaReconocido.Add(lexema)
                             filaLexema.Add(fila)
                             columnaLexema.Add(columna)
+                            tipoToken.Add(token.retornarToken("TEXTO"))
+                            estado = 0
+                            columna = columna + longitudPalabra
+                            longitudPalabra = 0
+                            lexema = ""
+                            indice = indice - 1
+                        Else
+                            lexemaReconocido.Add(lexema)
+                            filaLexema.Add(fila)
+                            columnaLexema.Add(columna)
+                            tipoToken.Add(token.retornarToken(Chr(34)))
 
                             estado = 0
                             columna = columna + longitudPalabra
@@ -458,6 +481,7 @@ Public Class Analizador
                         lexemaReconocido.Add(lexema)
                         filaLexema.Add(fila)
                         columnaLexema.Add(columna)
+                        tipoToken.Add(token.retornarToken("="))
 
                         estado = 0
                         columna = columna + longitudPalabra
@@ -469,6 +493,7 @@ Public Class Analizador
                         lexemaReconocido.Add(lexema)
                         filaLexema.Add(fila)
                         columnaLexema.Add(columna)
+                        tipoToken.Add(token.retornarToken("/"))
 
                         estado = 0
                         columna = columna + longitudPalabra
@@ -512,6 +537,7 @@ Public Class Analizador
                         lexemaReconocido.Add(lexema)
                         filaLexema.Add(fila)
                         columnaLexema.Add(columna)
+                        tipoToken.Add(token.retornarToken(";"))
 
                         estado = 0
                         columna = columna + longitudPalabra
@@ -523,6 +549,7 @@ Public Class Analizador
                         lexemaReconocido.Add(lexema)
                         filaLexema.Add(fila)
                         columnaLexema.Add(columna)
+                        tipoToken.Add(token.retornarToken(","))
 
                         estado = 0
                         columna = columna + longitudPalabra
@@ -537,7 +564,8 @@ Public Class Analizador
                             lexemaReconocido.Add(lexema)
                             filaLexema.Add(fila)
                             columnaLexema.Add(columna)
-                            tipoToken.Add(token.retornarToken("*"))
+                            tipoToken.Add(token.retornarToken("["))
+
                             estado = 0
                             columna = columna + longitudPalabra
                             longitudPalabra = 0
@@ -549,7 +577,8 @@ Public Class Analizador
                             lexemaReconocido.Add(lexema)
                             filaLexema.Add(fila)
                             columnaLexema.Add(columna)
-                            tipoToken.Add("Cruz")
+                            tipoToken.Add(token.retornarToken("["))
+
                             estado = 0
                             columna = columna + longitudPalabra - 1
                             longitudPalabra = 0
@@ -574,6 +603,7 @@ Public Class Analizador
                         lexemaReconocido.Add(lexema)
                         filaLexema.Add(fila)
                         columnaLexema.Add(columna)
+                        tipoToken.Add(token.retornarToken("]"))
 
                         estado = 0
                         columna = columna + longitudPalabra
@@ -645,6 +675,7 @@ Public Class Analizador
                             lexemaReconocido.Add(lexema)
                             filaLexema.Add(fila)
                             columnaLexema.Add(columna)
+                            tipoToken.Add(token.retornarToken("RNUMERO"))
 
                             estado = 0
                             columna = columna + longitudPalabra
@@ -662,22 +693,38 @@ Public Class Analizador
                             errorReconocido.Add(lexema)
                             filaError.Add(fila)
                             columnaError.Add(columna)
+
                             columna = columna + longitudPalabra
                             longitudPalabra = 0
                             lexema = ""
                             indice = indice - 1
                         End If
                 End Select
+                If indice > 0 Then
+                    If (Asc(v.Chars(indice - 1)) = 10) Then
+                        fila += 1
+                        columna = 1
+                        If (errorcito = True) Then
+                            fila -= 1
+                            If (columna > 1) Then
+                                columna = 1
+                            Else
+                                columna += 1
+                            End If
+                        End If
+                    End If
+                End If
             End If
+
         Next
 
         '---Creación PDF
         If (errorReconocido.Count > 0) Then
-            MessageBox.Show("El archivo contiene errores.", "Analizador Léxico v0.1")
-            PDF.crearPDF(errorReconocido, tipoToken, nomArchivo)
+            MessageBox.Show("El archivo contiene errores." & vbLf& & vbLf & "En su escritorio hallará un archivo, donde se especifica que errores hay en el Archivo.", "Analizador Léxico v0.1")
+            PDF.crearPDF_Errores(errorReconocido, nomArchivo, filaError, columnaError)
         Else
             MessageBox.Show("El archivo ha sido analizado correctamente. " & vbLf & "Observará un documento en su Escritorio", "Analizador Léxico v0.1")
-            PDF.crearPDF(lexemaReconocido, tipoToken, nomArchivo)
+            PDF.crearPDF(lexemaReconocido, tipoToken, nomArchivo, filaLexema, columnaLexema)
         End If
     End Sub
 End Class

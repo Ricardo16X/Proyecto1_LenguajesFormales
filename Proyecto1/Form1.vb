@@ -1,6 +1,4 @@
-﻿Imports itextsharp.text.pdf
-Imports itextsharp.text
-Imports System.IO
+﻿Imports System.IO
 
 Public Class Form1
     'Variable para guardar la ruta del archivo
@@ -28,7 +26,7 @@ Public Class Form1
     End Sub
     'Guardar Archivo tanto si existe o no.
     Private Sub GuardarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GuardarToolStripMenuItem.Click
-        If DireccionArchivo.Length > 3 Then
+        If DireccionArchivo.Length > 0 Then
             CajaTexto.SaveFile(DireccionArchivo, fileType:=RichTextBoxStreamType.PlainText)
         Else
             guardarArchivo(CajaTexto.Text)
@@ -40,6 +38,7 @@ Public Class Form1
         Try
             If (GuardarArchivo.ShowDialog = DialogResult.OK) Then
                 My.Computer.FileSystem.WriteAllText(GuardarArchivo.FileName, Texto, False)
+                DireccionArchivo = GuardarArchivo.FileName
             End If
         Catch ex As Exception
             MessageBox.Show(ex.ToString)
