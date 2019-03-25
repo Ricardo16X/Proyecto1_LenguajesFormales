@@ -4,7 +4,7 @@ Imports System.IO
 Imports itextsharp.text
 
 Public Class Analizador
-    Public Shared Sub AnalisisLexico(v As String)
+    Public Shared Sub AnalisisLexico(v As String, nomArchivo As String)
         Dim estado As Integer = 0
         Dim lexema As String = ""
         Dim letra As Char
@@ -671,23 +671,13 @@ Public Class Analizador
             End If
         Next
 
-        recorrerLexemas(lexemaReconocido)
-
-        recorrerErrores(errorReconocido)
-
-    End Sub
-
-    Private Shared Sub recorrerErrores(errorReconocido As ArrayList)
-        Dim rechazado As String
-        For Each rechazado In errorReconocido
-            MessageBox.Show(rechazado, "Errores")
-        Next
-    End Sub
-
-    Private Shared Sub recorrerLexemas(lexemaReconocido As ArrayList)
-        Dim lexema As String
-        For Each lexema In lexemaReconocido
-            MessageBox.Show(lexema, "Lexemas")
-        Next
+        '---Creación PDF
+        If (errorReconocido.Count > 0) Then
+            MessageBox.Show("El archivo contiene errores.", "Analizador Léxico v0.1")
+            PDF.crearPDF(errorReconocido, tipoToken, nomArchivo)
+        Else
+            MessageBox.Show("El archivo ha sido analizado correctamente. " & vbLf & "Observará un documento en su Escritorio", "Analizador Léxico v0.1")
+            PDF.crearPDF(lexemaReconocido, tipoToken, nomArchivo)
+        End If
     End Sub
 End Class

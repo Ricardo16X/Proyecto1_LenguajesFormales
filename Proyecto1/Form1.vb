@@ -47,7 +47,14 @@ Public Class Form1
     End Sub
     'Función para Analizar el Texto para poder crear el PDF con las instrucciones que aquí se escriban.
     Private Sub AnalizarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AnalizarToolStripMenuItem.Click
-        Analizador.AnalisisLexico(CajaTexto.Text + "_")
-        'AnalisisLexico.AnalisisLexico(CajaTexto.Text + "_")
+        If CajaTexto.Text.Length > 0 Then
+            If DireccionArchivo.Length = 0 Then
+                MessageBox.Show("Por favor, primero guarde el archivo.", "ACK - Generador PDF v0.1")
+            Else
+                Analizador.AnalisisLexico(CajaTexto.Text + "_", Path.GetFileName(DireccionArchivo))
+            End If
+        Else
+            MessageBox.Show("No hay texto que analizar." & vbLf& & vbLf & "Por favor, cargue un archivo .ACK o escriba las respectivas instrucciones.")
+        End If
     End Sub
 End Class
