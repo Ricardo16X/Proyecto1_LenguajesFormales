@@ -36,22 +36,6 @@ Public Class Analizador
         columna = 1
         longitudPalabra = 0
 
-        'Variables de PDF
-
-        'Instrucciones
-        Dim Interlineado As Double = 1.5
-        Dim EnableInterlineado As Boolean = False
-        Dim LetraSize As Double = 11
-        Dim enableLetraSize As Boolean = False
-        Dim NombreArchivo As String = "Documento.pdf"
-        Dim enableNombreArchivo As Double = False
-        Dim DireccionArchivo As String = "C:\"
-        Dim enableDirArchivo As Boolean = False
-
-        'Instrucciones de Texto
-
-
-
         'Inicio del Analizador
         For indice = 0 To v.Length - 1
 
@@ -261,12 +245,6 @@ Public Class Analizador
 
                                 ElseIf (String.Compare("INTERLINEADO", lexema.ToUpper)) = 0 Then
                                     tipoToken.Add(token.retornarToken("PALABRA"))
-
-                                    '----------------Habilita el Interlineado---------------
-                                    If (letra = "(") Then
-                                        EnableInterlineado = True
-                                    End If
-                                    '-----------------------------------------------------
 
                                 ElseIf (String.Compare("TAMANIO_LETRA", lexema.ToUpper)) = 0 Then
                                     tipoToken.Add(token.retornarToken("PALABRA"))
@@ -718,13 +696,46 @@ Public Class Analizador
 
         Next
 
+
         '---Creación PDF
         If (errorReconocido.Count > 0) Then
             MessageBox.Show("El archivo contiene errores." & vbLf& & vbLf & "En su escritorio hallará un archivo, donde se especifica que errores hay en el Archivo.", "Analizador Léxico v0.1")
             PDF.crearPDF_Errores(errorReconocido, nomArchivo, filaError, columnaError)
         Else
-            MessageBox.Show("El archivo ha sido analizado correctamente. " & vbLf & "Observará un documento en su Escritorio", "Analizador Léxico v0.1")
-            PDF.crearPDF(lexemaReconocido, tipoToken, nomArchivo, filaLexema, columnaLexema)
+            MessageBox.Show("El archivo ha sido analizado correctamente. " & vbLf & "Observará un documento en su Escritorio" & vbLf & "Sobre el Análisis Léxico Realizado", "Analizador Léxico v0.1")
+            '---Reconocimiento de Lexemas para realizar el apartado de instrucciones sin la evaluación correspondiente.
+            Dim archivoSalida As String = ""
+            Dim interlineado As Double = 0.0
+            Dim dirArchivo As String = ""
+            Dim sizeLetra As Integer = 0
+
+            For i = 0 To lexemaReconocido.Count
+                If (lexemaReconocido(i).ToString.ToUpper = "nombre_archivo".ToUpper) Then
+                    '---Nombre de Archivo si exite...
+                    archivoSalida = lexemaReconocido(i + 2)
+                    i = lexemaReconocido.Count + 1
+                Else
+                    archivoSalida = "Default.pdf"
+                End If
+                If (lexemaReconocido(i).ToString.ToUpper = "Interlineado".ToUpper) Then
+                    interlineado = Convert.ToDouble(lexemaReconocido(i + 2).ToString)
+                Else
+                    interlineado = 1.5
+                End If
+                If (lexemaReconocido(i).ToString.ToUpper = "Tamanio_letra".ToUpper) Then
+                    sizeLetra = Convert.ToInt32(lexemaReconocido(i + 2).ToString)
+                Else
+                    sizeLetra = 11
+                End If
+                If (lexemaReconocido(i).ToString.ToUpper = "direccion_archivo".ToUpper) Then
+                    dirArchivo = lexemaReconocido(i + 2).ToString
+                End If
+            Next
+            '---Paso de Parámetros para crear el PDF de Usuario.
+            PDF.crearPDFUser(lexemaReconocido, interlineado, sizeLetra, dirArchivo)
+
+            PDF.crearPDF(lexemaReconocido, tipoToken, nomArchivo, archivoSalida, filaLexema, columnaLexema)
         End If
+
     End Sub
 End Class

@@ -76,25 +76,25 @@ Partial Class Form1
         'AbrirToolStripMenuItem
         '
         Me.AbrirToolStripMenuItem.Name = "AbrirToolStripMenuItem"
-        Me.AbrirToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
+        Me.AbrirToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.AbrirToolStripMenuItem.Text = "Abrir"
         '
         'AnalizarToolStripMenuItem
         '
         Me.AnalizarToolStripMenuItem.Name = "AnalizarToolStripMenuItem"
-        Me.AnalizarToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
+        Me.AnalizarToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.AnalizarToolStripMenuItem.Text = "Analizar"
         '
         'GuardarToolStripMenuItem
         '
         Me.GuardarToolStripMenuItem.Name = "GuardarToolStripMenuItem"
-        Me.GuardarToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
+        Me.GuardarToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.GuardarToolStripMenuItem.Text = "Guardar"
         '
         'SalirToolStripMenuItem
         '
         Me.SalirToolStripMenuItem.Name = "SalirToolStripMenuItem"
-        Me.SalirToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
+        Me.SalirToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.SalirToolStripMenuItem.Text = "Salir"
         '
         'AcercaDeToolStripMenuItem
@@ -107,13 +107,13 @@ Partial Class Form1
         'InfoToolStripMenuItem
         '
         Me.InfoToolStripMenuItem.Name = "InfoToolStripMenuItem"
-        Me.InfoToolStripMenuItem.Size = New System.Drawing.Size(139, 22)
+        Me.InfoToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.InfoToolStripMenuItem.Text = "Información"
         '
         'ManualToolStripMenuItem
         '
         Me.ManualToolStripMenuItem.Name = "ManualToolStripMenuItem"
-        Me.ManualToolStripMenuItem.Size = New System.Drawing.Size(139, 22)
+        Me.ManualToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.ManualToolStripMenuItem.Text = "Manual"
         '
         'Form1
@@ -125,6 +125,7 @@ Partial Class Form1
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.CajaTexto)
         Me.Controls.Add(Me.MenuStrip1)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.MainMenuStrip = Me.MenuStrip1
         Me.MaximizeBox = False
         Me.Name = "Form1"

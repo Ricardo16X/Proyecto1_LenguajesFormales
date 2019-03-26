@@ -56,4 +56,6 @@ Public Class Form1
             MessageBox.Show("No hay texto que analizar." & vbLf& & vbLf & "Por favor, cargue un archivo .ACK o escriba las respectivas instrucciones.")
         End If
     End Sub
+
+
 End Class

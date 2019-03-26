@@ -2,7 +2,7 @@
 Imports itextsharp.text.pdf
 Imports System.IO
 Public Class PDF
-    Friend Shared Sub crearPDF(Lexemas As ArrayList, tipodeToken As ArrayList, nomArchivo As String, filaLexema As ArrayList, columnaLexema As ArrayList)
+    Friend Shared Sub crearPDF(Lexemas As ArrayList, tipodeToken As ArrayList, nomArchivo As String, archivoSalida As String, filaLexema As ArrayList, columnaLexema As ArrayList)
         Dim pdf As New Document(PageSize.A4)
         Dim escritor As PdfWriter
 
@@ -25,7 +25,9 @@ Public Class PDF
 
         pdf.Add(Chunk.NEWLINE)
         pdf.Add(Chunk.NEWLINE)
+        pdf.Add(Chunk.NEWLINE)
         pdf.Add(New Paragraph("Archivo Fuente: " & nomArchivo))
+        pdf.Add(New Paragraph("Archivo Salida: " & archivoSalida))
         '---
 
         '---Tabla con los Lexemas recopilados en el analizador...
@@ -112,5 +114,44 @@ Public Class PDF
         pdf.Add(tabla)
         '---
         pdf.Close()
+    End Sub
+
+    Friend Shared Sub crearPDFUser(lexemaReconocido As ArrayList, interlineado As Integer, tamanoLetra As Double, dirArchivo As String)
+        Dim pdfSalida As New Document(PageSize.LETTER, 20, 20, 10, 10)
+        Dim pdfEscritor As PdfWriter
+        Try
+            pdfEscritor = PdfWriter.GetInstance(pdfSalida, New FileStream(dirArchivo, FileMode.Create, FileAccess.Write, FileShare.None))
+        Catch ex As Exception
+        Finally
+            pdfEscritor = PdfWriter.GetInstance(pdfSalida, New FileStream("C:\", FileMode.Create, FileAccess.Write, FileShare.None))
+        End Try
+
+        pdfSalida.Open()
+
+        Dim indice As Integer = 0
+
+        While indice < lexemaReconocido.Count
+            '---Texto subrayado o en negrita
+            If (lexemaReconocido(indice).ToString.ToUpper = "[".ToUpper) Then
+                If lexemaReconocido(indice + 1).ToString.ToUpper = "+" Then
+                    'Escribo texto en negrita
+
+                    indice += 2
+                ElseIf lexemaReconocido(indice + 1).ToString.ToUpper = "*" Then
+                    'Escribo texto en raya
+
+                    indice += 2
+                End If
+            Else
+                indice += 1
+            End If
+            '---Lista Enumerada
+            If lexemaReconocido(indice).ToString.ToUpper = "Numeros".ToUpper Then
+                If lexemaReconocido(indice + 1).ToString.ToUpper = "(" Then
+
+                End If
+            End If
+            '---
+        End While
     End Sub
 End Class
