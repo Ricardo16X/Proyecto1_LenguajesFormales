@@ -61,36 +61,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Busca un recurso adaptado de tipo System.Byte[].
-        '''</summary>
-        Friend ReadOnly Property itextsharp() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("itextsharp", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Busca un recurso adaptado de tipo System.Byte[].
-        '''</summary>
-        Friend ReadOnly Property itextsharp_pdfa() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("itextsharp_pdfa", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Busca un recurso adaptado de tipo System.Byte[].
-        '''</summary>
-        Friend ReadOnly Property itextsharp_xtra() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("itextsharp_xtra", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         '''</summary>
         Friend ReadOnly Property usac() As System.Drawing.Bitmap
