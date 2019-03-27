@@ -35,6 +35,8 @@
                 Return "Corchete de Cierre"
             Case "+"
                 Return "Cruz"
+            Case ","
+                Return "Coma"
             Case Else
                 Return "Palabra no identificada"
         End Select

@@ -33,6 +33,7 @@ Partial Class Form1
         Me.AcercaDeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.InfoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ManualToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GuardarComoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -68,7 +69,7 @@ Partial Class Form1
         '
         'ArchivoToolStripMenuItem
         '
-        Me.ArchivoToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AbrirToolStripMenuItem, Me.AnalizarToolStripMenuItem, Me.GuardarToolStripMenuItem, Me.SalirToolStripMenuItem})
+        Me.ArchivoToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AbrirToolStripMenuItem, Me.AnalizarToolStripMenuItem, Me.GuardarToolStripMenuItem, Me.GuardarComoToolStripMenuItem, Me.SalirToolStripMenuItem})
         Me.ArchivoToolStripMenuItem.Name = "ArchivoToolStripMenuItem"
         Me.ArchivoToolStripMenuItem.Size = New System.Drawing.Size(60, 20)
         Me.ArchivoToolStripMenuItem.Text = "Archivo"
@@ -76,25 +77,25 @@ Partial Class Form1
         'AbrirToolStripMenuItem
         '
         Me.AbrirToolStripMenuItem.Name = "AbrirToolStripMenuItem"
-        Me.AbrirToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.AbrirToolStripMenuItem.Size = New System.Drawing.Size(159, 22)
         Me.AbrirToolStripMenuItem.Text = "Abrir"
         '
         'AnalizarToolStripMenuItem
         '
         Me.AnalizarToolStripMenuItem.Name = "AnalizarToolStripMenuItem"
-        Me.AnalizarToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.AnalizarToolStripMenuItem.Size = New System.Drawing.Size(159, 22)
         Me.AnalizarToolStripMenuItem.Text = "Analizar"
         '
         'GuardarToolStripMenuItem
         '
         Me.GuardarToolStripMenuItem.Name = "GuardarToolStripMenuItem"
-        Me.GuardarToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.GuardarToolStripMenuItem.Size = New System.Drawing.Size(159, 22)
         Me.GuardarToolStripMenuItem.Text = "Guardar"
         '
         'SalirToolStripMenuItem
         '
         Me.SalirToolStripMenuItem.Name = "SalirToolStripMenuItem"
-        Me.SalirToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.SalirToolStripMenuItem.Size = New System.Drawing.Size(159, 22)
         Me.SalirToolStripMenuItem.Text = "Salir"
         '
         'AcercaDeToolStripMenuItem
@@ -107,14 +108,20 @@ Partial Class Form1
         'InfoToolStripMenuItem
         '
         Me.InfoToolStripMenuItem.Name = "InfoToolStripMenuItem"
-        Me.InfoToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.InfoToolStripMenuItem.Size = New System.Drawing.Size(139, 22)
         Me.InfoToolStripMenuItem.Text = "Información"
         '
         'ManualToolStripMenuItem
         '
         Me.ManualToolStripMenuItem.Name = "ManualToolStripMenuItem"
-        Me.ManualToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ManualToolStripMenuItem.Size = New System.Drawing.Size(139, 22)
         Me.ManualToolStripMenuItem.Text = "Manual"
+        '
+        'GuardarComoToolStripMenuItem
+        '
+        Me.GuardarComoToolStripMenuItem.Name = "GuardarComoToolStripMenuItem"
+        Me.GuardarComoToolStripMenuItem.Size = New System.Drawing.Size(159, 22)
+        Me.GuardarComoToolStripMenuItem.Text = "Guardar como..."
         '
         'Form1
         '
@@ -149,4 +156,5 @@ Partial Class Form1
     Friend WithEvents InfoToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ManualToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AnalizarToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents GuardarComoToolStripMenuItem As ToolStripMenuItem
 End Class

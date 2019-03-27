@@ -11,6 +11,7 @@ Public Class Analizador
         Dim letra As Char
         Dim aski As Integer
         Dim indice As Integer = 0
+        Dim comentario As Boolean = False
 
         Dim cadena As Boolean = False
         Dim Texto As String = ""
@@ -468,16 +469,22 @@ Public Class Analizador
                         indice = indice - 1
                     Case 12
                         'Acepta /
-                        lexemaReconocido.Add(lexema)
-                        filaLexema.Add(fila)
-                        columnaLexema.Add(columna)
-                        tipoToken.Add(token.retornarToken("/"))
+                        If (aski = 42) Then
+                            estado = 13
+                            comentario = True
+                        Else
+                            '---Acepta diagonal sin asterisco, entonces no es comentario.
+                            lexemaReconocido.Add(lexema)
+                            filaLexema.Add(fila)
+                            columnaLexema.Add(columna)
+                            tipoToken.Add(token.retornarToken("/"))
 
-                        estado = 0
-                        columna = columna + longitudPalabra
-                        longitudPalabra = 0
-                        lexema = ""
-                        indice = indice - 1
+                            estado = 0
+                            columna = columna + longitudPalabra
+                            longitudPalabra = 0
+                            lexema = ""
+                            indice = indice - 1
+                        End If
                     Case 13
                         'Acepta *
                         If posibleCadena = True Then
@@ -498,6 +505,14 @@ Public Class Analizador
                                 lexema = ""
                                 indice = indice - 1
                                 posibleCadena = False
+                            End If
+                        ElseIf comentario = True Then
+                            If (aski >= 32 And aski <= 41) Or (aski >= 43 And aski <= 254) Then
+                                estado = 13
+                                columna += 1
+                            Else
+                                comentario = False
+                                indice += 1
                             End If
                         Else
                             lexemaReconocido.Add(lexema)
@@ -704,36 +719,32 @@ Public Class Analizador
         Else
             MessageBox.Show("El archivo ha sido analizado correctamente. " & vbLf & "Observará un documento en su Escritorio" & vbLf & "Sobre el Análisis Léxico Realizado", "Analizador Léxico v0.1")
             '---Reconocimiento de Lexemas para realizar el apartado de instrucciones sin la evaluación correspondiente.
-            Dim archivoSalida As String = ""
-            Dim interlineado As Double = 0.0
-            Dim dirArchivo As String = ""
-            Dim sizeLetra As Integer = 0
+            Dim archivoSalida As String = "Default.pdf"
+            Dim interlineado As Double = 1.5
+            Dim dirArchivo As String = "C:\"
+            Dim sizeLetra As Integer = 11
 
-            For i = 0 To lexemaReconocido.Count
+            For i = 0 To lexemaReconocido.Count - 1
                 If (lexemaReconocido(i).ToString.ToUpper = "nombre_archivo".ToUpper) Then
                     '---Nombre de Archivo si exite...
-                    archivoSalida = lexemaReconocido(i + 2)
-                    i = lexemaReconocido.Count + 1
-                Else
-                    archivoSalida = "Default.pdf"
+
+                    archivoSalida = lexemaReconocido(i + 2).ToString
+                    archivoSalida = archivoSalida.Replace(Chr(34), "")
+                    'i = lexemaReconocido.Count + 1
                 End If
                 If (lexemaReconocido(i).ToString.ToUpper = "Interlineado".ToUpper) Then
                     interlineado = Convert.ToDouble(lexemaReconocido(i + 2).ToString)
-                Else
-                    interlineado = 1.5
+
                 End If
                 If (lexemaReconocido(i).ToString.ToUpper = "Tamanio_letra".ToUpper) Then
                     sizeLetra = Convert.ToInt32(lexemaReconocido(i + 2).ToString)
-                Else
-                    sizeLetra = 11
                 End If
                 If (lexemaReconocido(i).ToString.ToUpper = "direccion_archivo".ToUpper) Then
                     dirArchivo = lexemaReconocido(i + 2).ToString
                 End If
             Next
             '---Paso de Parámetros para crear el PDF de Usuario.
-            PDF.crearPDFUser(lexemaReconocido, interlineado, sizeLetra, dirArchivo)
-
+            PDF.crearPDFUser(lexemaReconocido, interlineado, sizeLetra, dirArchivo, archivoSalida)
             PDF.crearPDF(lexemaReconocido, tipoToken, nomArchivo, archivoSalida, filaLexema, columnaLexema)
         End If
 

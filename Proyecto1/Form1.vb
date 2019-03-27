@@ -57,5 +57,16 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub GuardarComoToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GuardarComoToolStripMenuItem.Click
 
+        If DireccionArchivo.Length > 0 Then
+            Dim nombreNuevo As String
+            nombreNuevo = InputBox("Ingrese el nuevo nombre del archivo.")
+            My.Computer.FileSystem.RenameFile(DireccionArchivo, nombreNuevo & ".ack")
+        Else
+            MessageBox.Show("Por favor, abra primero un archivo para habilitar esta opción!", "Error - Generador PDF")
+        End If
+
+
+    End Sub
 End Class
